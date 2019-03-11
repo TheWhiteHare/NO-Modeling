@@ -1,6 +1,6 @@
 function [dilation] = dilation_matlab_kernel_4(c, t, NO_Mult, stim_duration, NO_sens, basalGC, Hz, radius)
 HOME = pwd;
-cd('C:\Users\wdh130\Documents\MATLAB\NOFeedbackData')
+cd('C:\Users\wdh130\Documents\MATLAB\NOFeedbackData') 
 
 delay = 6; %kernel size
 % delay = 15; %kernel size
