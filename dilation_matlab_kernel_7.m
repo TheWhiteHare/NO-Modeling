@@ -1,6 +1,6 @@
-function [dilation] = dilation_matlab_kernel_4(c, t, NO_Mult, stim_duration, NO_sens, basalGC, Hz, radius)
+function [dilation] = dilation_matlab_kernel_7(c, t, NO_Mult, stim_duration, NO_sens, basalGC, Hz, radius,pfHgb)
 HOME = pwd;
-cd('C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData') 
+cd('C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData')
 
 delay = 6; %kernel size
 % delay = 15; %kernel size
@@ -51,18 +51,18 @@ else
 % NO_sens_Hill = @(GC_state) interp1(GC(2:end)-0.005,NO_sens_Hill_hold,GC_state);   
 % %
     
-if abs(dilation*NO_sens) <= 10^-6
+if abs(dilation*NO_sens) <= 10^-8
     dilation = 0
 else
     dilation = round(dilation*NO_sens,8)
 end
 
 
-if t > (delay)
-        ExtraSignal = 19.25*((t-(delay)).^(a1-1).*b1.^(a1).*exp(-b1.*(t-(delay)))./gamma(a1))
-        dilation = dilation + ExtraSignal*2;
-else
-end
+% if t > (delay)
+%         ExtraSignal = 19.25*((t-(delay)).^(a1-1).*b1.^(a1).*exp(-b1.*(t-(delay)))./gamma(a1))
+%         dilation = dilation + ExtraSignal*2;
+% else
+% end
 
 
 % if t > (delay+9)
@@ -83,7 +83,7 @@ end
 % -test(c)*nNOS_per*2*pi*r*(1+(rect2(t/tn)*(NO_Mult-1)))
 end
 
-fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith20SCD.csv'],'a');
+fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith' num2str(pfHgb) 'Hgb_RawGamma_v10.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith35lowSCD.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_ExtraPulseNorm60Hgb.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaBand.csv'],'a');
