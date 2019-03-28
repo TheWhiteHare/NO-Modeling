@@ -1,15 +1,12 @@
-function [ new_r_l ] = calculateRBCCoreRadius( Vessel_dynamic, Vessel, Hct )
+function [ r_RBC_modifier ] = calculateRBCCoreRadius( Vessel_dynamic, Vessel, Hct )
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
 
-
+Vessel = Vessel*10^6;
 Vessel_dynamic = Vessel_dynamic*10^6;
 
-(Vessel - cfl_thickness(Vessel_dynamic,Hct))/(Vessel - cfl_thickness(Vessel))
-
-new_r_l = Vessel_dynamic - CFL;
-%Hct modifier
+r_RBC_modifier = (Vessel - cfl_thickness(Vessel_dynamic,Hct))/(Vessel - cfl_thickness(Vessel,Hct)) - 1;
 
 end
 
