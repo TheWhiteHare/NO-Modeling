@@ -54,3 +54,26 @@ set(h,'facea',0.1)
 xlabel('plasma free Hemoglobin (\muM)')
 ylabel('\Delta vessel diameter (%)')
 title('')
+
+%% show baseline diameter change of Hct
+hold_data = importdata('NOChangesWithHct_20VD_v4.csv')
+Hct = hold_data.data(:,10);
+NO = hold_data.data(:,13);
+
+    GC_activation = 100./((10^0.95./NO).^0.8+1);
+    GC_activation_baseline = 100/((10^0.95/NO(6))^0.8+1);
+    dilation = GC_activation - GC_activation_baseline;
+    
+    figure, hold on
+     scatter(Hct,dilation,'k','LineWidth',3)
+     plot(Hct,dilation,'k','LineWidth',3)
+    axis([0 0.8 -10 10])
+
+% show change in perivascular NO from changing Hct
+Hct
+for ii = 1:length(Hct)
+hold_data = importdata('Hct20_perivascular_NO')
+
+
+
+

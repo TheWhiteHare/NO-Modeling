@@ -1,4 +1,4 @@
-function [ output ] = plotEffectOfNOsens( input )
+function [ output ] = analyzeEffectOfHgb( input )
 %________________________________________________________________________________________________________________________
 % Written by W. Davis Haselden
 % M.D./Ph.D. Candidate, Department of Neuroscience
@@ -13,14 +13,14 @@ function [ output ] = plotEffectOfNOsens( input )
 %   Inputs: file location of csv files
 %
 %   Outputs: 
-%       output.(NOx1/NOx3/NOx5).NO_production
-%       output.(NOx1/NOx3/NOx5).concentration
-%       output.(NOx1/NOx3/NOx5).dilation
-%       output.(NOx1/NOx3/NOx5).variance
-%       output.(NOx1/NOx3/NOx5).HRF
-%       output.(NOx1/NOx3/NOx5).spectrumPower
-%       output.(NOx1/NOx3/NOx5).spectrumHz
-%   a 1% change in GC activation causes a 1%, 3%, or 5% change in vessel diameter (NOx1/NOx3/NOx5)         
+%       output.(Hct20/Hct40/Hct60).NO_production
+%       output.(Hct20/Hct40/Hct60).concentration
+%       output.(Hct20/Hct40/Hct60).dilation
+%       output.(Hct20/Hct40/Hct60).variance
+%       output.(Hct20/Hct40/Hct60).HRF
+%       output.(Hct20/Hct40/Hct60).spectrumPower
+%       output.(Hct20/Hct40/Hct60).spectrumHz
+%   Increasing Hct decreases the thickness of the CFL.          
 %________________________________________________________________________________________________________________________
 
 input = 'C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData'; %placeholder for input
@@ -28,44 +28,49 @@ input = 'C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData'; %placeholder f
 %%
 addpath(input)
 
-NO_sens = [1 3 5]
+pfHgb = [1 20 40];
 file_number = [1071:1:1080];
-dt = 0.01;
-time = [15:dt:295];
+dt = 1/6;
+time = [15:dt:285];
 
 params.Fs = 1/dt;
 params.tapers = [5 9];
 params.fpass = [0.025 3];
 
-for s = 1:length(NO_sens)
+for s = 1:length(pfHgb)
     for ii = 1:length(file_number)
-        f_name = ['2NO_0NOd_' num2str(NO_sens(s)) 'NOsens_50bGC_' num2str(file_number(ii)) 'Hz_10VD_6sNOkernel_GammaWith1Hgb_RawGamma_v10.csv'];
+            f_name = ['2NO_0NOd_3NOsens_50bGC_' num2str(file_number(ii)) 'Hz_10VD_6sNOkernel_GammaWith' num2str(pfHgb(s)) 'Hgb_RawGamma_v10.csv'];
+
         hold_data = importdata(f_name);
         [a index] = unique(hold_data(:,1));
         hold_data = hold_data(index,:); %don't take replicate values
         
         % get concentrations and dilations predicted by the model_______________________________________________________________
-        output.(['NOx' num2str(NO_sens(s))]).concentration(ii,:) = interp1(hold_data(:,1),hold_data(:,2),time')'; %concentration
-        output.(['NOx' num2str(NO_sens(s))]).dilation(ii,:) = interp1(hold_data(:,1),hold_data(:,3),time')'; %dilation
+        output.(['Hgb' num2str(pfHgb(s))]).concentration(ii,:) = interp1(hold_data(:,1),hold_data(:,2),time')'; %concentration
+        output.(['Hgb' num2str(pfHgb(s))]).dilation(ii,:) = interp1(hold_data(:,1),hold_data(:,3),time')'; %dilation
         
         % get the variance of the vessel dynamics_______________________________________________________________________________
-        output.(['NOx' num2str(NO_sens(s))]).variance(ii,:) = var(output.(['NOx' num2str(NO_sens(s))]).dilation(ii,:));
+        output.(['Hgb' num2str(pfHgb(s))]).variance(ii,:) = var(output.(['Hgb' num2str(pfHgb(s))]).dilation(ii,:));
         
         % get the power spectrum of the vessel dynamics_________________________________________________________________________
-        [output.(['NOx' num2str(NO_sens(s))]).spectrumHz(ii,:), output.(['NOx' num2str(NO_sens(s))]).spectrumPower(ii,:)] = mtspectrumc(output.(['NOx' num2str(NO_sens(s))]).dilation(ii,:),params);
+        [output.(['Hgb' num2str(pfHgb(s))]).spectrumPower(ii,:), output.(['Hgb' num2str(pfHgb(s))]).spectrumHz(ii,:)] = mtspectrumc(output.(['Hgb' num2str(pfHgb(s))]).dilation(ii,:),params);
         
         % deconvolve the hemodynamics response function from the white
         % gaussian noise input and the vasodilation output from COMSOL__________________________________________________________
         
         fs = 6; %get white gaussian noise NO production given to COMSOL
         Gam = importdata(['GammaBandPower_' num2str(file_number(ii)) '.csv'])';
-        time_Gam = 1/fs:1/fs:length(Gam)/fs;
-        output.(['NOx' num2str(NO_sens(s))]).NO_production(ii,:) = interp1(time_Gam,Gam',time,'spline','extrap');
+%         fc = 0.75;
+%         [b,a] = butter(6,fc/(fs/2));
+%         Gam = filtfilt(b, a, Gam);
         
-        kernel_length = 10/dt; %get a 10s kernel estimate
-        From = detrend(output.(['NOx' num2str(NO_sens(s))]).NO_production(ii,:)); %remove DC component
-        To = detrend(output.(['NOx' num2str(NO_sens(s))]).dilation(ii,:)); %remove DC component
-        [output.(['NOx' num2str(NO_sens(s))]).HRF(ii,:)] = deconvolveHRF(From,To,kernel_length); %calculate HRF with Toeplitz matrix
+        time_Gam = 1/fs:1/fs:length(Gam)/fs;
+        output.(['Hgb' num2str(pfHgb(s))]).NO_production(ii,:) = interp1(time_Gam,Gam',time,'spline','extrap');
+        
+        kernel_length = round(10/dt); %get a 10s kernel estimate
+        From = detrend(output.(['Hgb' num2str(pfHgb(s))]).NO_production(ii,:)); %remove DC component
+        To = detrend(output.(['Hgb' num2str(pfHgb(s))]).dilation(ii,:)); %remove DC component
+        [output.(['Hgb' num2str(pfHgb(s))]).HRF(ii,:)] = deconvolveHRF(From,To,kernel_length); %calculate HRF with Toeplitz matrix
         
     end
 end

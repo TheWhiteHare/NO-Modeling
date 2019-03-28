@@ -1,4 +1,4 @@
-function [ ] = plotEffectOfNOsens( input )
+function [ ] = plotEffectOfStaticvsDynamic( input )
 %________________________________________________________________________________________________________________________
 % Written by W. Davis Haselden
 % M.D./Ph.D. Candidate, Department of Neuroscience
@@ -28,17 +28,17 @@ function [ ] = plotEffectOfNOsens( input )
 
 dt = 1/6;
 time = [0:dt:10];
-NO_sens = [1 3 5];
-LineColor = {[166,189,219]./256,[54,144,192]./256,[1,100,80]./256};
+condition = {'dynamic', 'static'};
+LineColor = {[1 0 0],[0 0 1]};
 
 figure, 
 % plot the extracted HRF___________________________________________________
 subplot(6,2,[2 4 6]), hold on
-for jj = 1:length(NO_sens)
-    for ii = 1:size(input.NOx3.HRF,1)
-        plot(time,input.(['NOx' num2str(NO_sens(jj))]).HRF(ii,:),'Color',[LineColor{jj} 1/5])
+for s = 1:length(condition)
+    for ii = 1:size(input.dynamic.HRF,1)
+        plot(time,input.(condition{s}).HRF(ii,:),'Color',[LineColor{s} 1/5])
     end
-    h1{jj} = plot(time,mean(input.(['NOx' num2str(NO_sens(jj))]).HRF,1),'Color',[LineColor{jj}],'LineWidth',3);
+    h1{s} = plot(time,mean(input.(condition{s}).HRF,1),'Color',[LineColor{s}],'LineWidth',3);
     
     %std_dev = std(input.(['NOx' num2str(NO_sens(jj))]).HRF);
     %high = mean(input.(['NOx' num2str(NO_sens(jj))]).HRF(ii,:),1)+std_dev;
@@ -50,25 +50,26 @@ for jj = 1:length(NO_sens)
     %set(f1{jj},'facea',[1/10]);
     %set(f1{jj},'facec',[LineColor{jj}(1:3)]);
 end
-axis([0 10 -5 10])
-legend([h1{1} h1{2} h1{3}],{'NOx1','NOx3','NOx5'})
+xlim([0.1 9.5])
+ylim([-0.4 0.7])
+%legend([h1{1} h1{2} h1{3}],{'NOx1','NOx3','NOx5'})
 xlabel('time (s)')
 ylabel('a.u.')
 title('hemodynamics response function')
 
 % plot the power spectrum__________________________________________________
 subplot(6,2,[8 10 12]), hold on
-Hz = input.NOx1.spectrumHz(1,:);
+Hz = input.dynamic.spectrumHz(1,:);
 
-for jj = 1:length(NO_sens)
-    for ii = 1:size(input.NOx3.spectrumPower,1)
-        plot(Hz,input.(['NOx' num2str(NO_sens(jj))]).spectrumPower(ii,:),'Color',[LineColor{jj} 1/5])
+for s = 1:length(condition)
+    for ii = 1:size(input.dynamic.spectrumPower,1)
+        plot(Hz,input.(condition{s}).spectrumPower(ii,:),'Color',[LineColor{s} 1/5])
     end
-    h1{jj} = plot(Hz,mean(input.(['NOx' num2str(NO_sens(jj))]).spectrumPower,1),'Color',[LineColor{jj}],'LineWidth',3);
+    h1{s} = plot(Hz,mean(input.(condition{s}).spectrumPower,1),'Color',[LineColor{s}],'LineWidth',3);
     
-    std_dev = std(input.(['NOx' num2str(NO_sens(jj))]).spectrumPower);
-    high = mean(input.(['NOx' num2str(NO_sens(jj))]).spectrumPower(ii,:),1)+std_dev;
-    low = mean(input.(['NOx' num2str(NO_sens(jj))]).spectrumPower(ii,:),1)-std_dev;
+    std_dev = std(input.(condition{s}).spectrumPower);
+    high = mean(input.(condition{s}).spectrumPower(ii,:),1)+std_dev;
+    low = mean(input.(condition{s}).spectrumPower(ii,:),1)-std_dev;
     %[p_h] = prctile(input.(['NOx' num2str(NO_sens(jj))]).HRF,[2.5 97.5]);
     
     %f1{jj} = fill([Hz flip(Hz)],[low flip(high)],'k','LineStyle','none');
@@ -89,8 +90,8 @@ set(gca,'xminorgrid','on')
 
 % plot the variance in the baseline vessel diameter________________________
 subplot(6,2,[9 11]), hold on
-for jj = 1:length(NO_sens)
-notBoxPlot([input.(['NOx' num2str(NO_sens(jj))]).variance],[ones(1,10).*jj])
+for s = 1:length(condition)
+notBoxPlot([input.(condition{s}).variance],[ones(1,10).*s])
 end
 set(gca,'XTick',[1 2 3])
 set(gca,'XTickLabels',{'NOx1','NOx3','NOx5'})
@@ -101,8 +102,8 @@ ylim([0 1])
 % plot example vasodynamics
 time_all = [15:dt:285];
 subplot(6,2,[5 7]), hold on
-for jj = 1:length(NO_sens)
-    plot(time_all,input.(['NOx' num2str(NO_sens(jj))]).dilation(1,:),'Color',[LineColor{jj}(1:3) 1],'LineWidth',2)
+for s = 1:length(condition)
+    plot(time_all,input.(condition{s}).dilation(1,:),'Color',[LineColor{s}(1:3) 1],'LineWidth',2)
 end
 xlabel('time (s)')
 ylabel('\Deltavessel diameter')
