@@ -1,4 +1,4 @@
-function [ r_RBC_modifier ] = calculateRBCCoreRadius( Vessel_dynamic, Vessel, Hct)
+function [ r_RBC_modifier ] = calculateRBCCoreModifier( Vessel_dynamic, Vessel, Hct)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 
