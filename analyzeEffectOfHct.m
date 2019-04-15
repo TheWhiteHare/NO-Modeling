@@ -23,15 +23,15 @@ function [ output ] = analyzeEffectOfHct( input )
 %   Increasing Hct decreases the thickness of the CFL.          
 %________________________________________________________________________________________________________________________
 
-input = 'C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData'; %placeholder for input
+input = 'C:\Users\wdh130\Documents\NO-Modeling-Data\Hematocrit'; %placeholder for input
 
 %%
 addpath(input)
 
-Hct = [20 40 60];
-file_number = [1071:1:1080];
+Hct = [20 45 60];
+file_number = [1073:1:1079];
 dt = 1/6;
-time = [15:dt:285];
+time = [15:dt:300];
 
 params.Fs = 1/dt;
 params.tapers = [5 9];
@@ -39,11 +39,7 @@ params.fpass = [0.025 3];
 
 for s = 1:length(Hct)
     for ii = 1:length(file_number)
-        if s == 2
-            f_name = ['2NO_0NOd_3NOsens_50bGC_' num2str(file_number(ii)) 'Hz_10VD_6sNOkernel_GammaWith1Hgb_RawGamma_v10.csv'];
-        else
-            f_name = ['2NO_0NOd_3NOsens_50bGC_' num2str(file_number(ii)) 'Hz_10VD_6sNOkernel_GammaWith1Hgb_' num2str(Hct(s)) '_Hct_RawGamma_v11.csv'];
-        end
+        f_name = ['3NO_0NOd_3NOsens_50bGC_' num2str(file_number(ii)) 'Hz_20VD_6sNOkernel_GammaWith1Hgb' num2str(Hct(s)) ' _Hct_RawGamma_v13.csv'];
         hold_data = importdata(f_name);
         [a index] = unique(hold_data(:,1));
         hold_data = hold_data(index,:); %don't take replicate values

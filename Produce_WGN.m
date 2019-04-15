@@ -63,13 +63,51 @@ set(h1(2), 'Color', [0 0 0]);
 set(gca,'XScale','log','YScale','log');
 
 %%
-for kk = 81
-fs = 6;
-duration = 1100;
-Gam = wgn(1,fs*duration,2);
-%Gam = Gam.^2;%
-%Gam = Gam.*5*10e-3;
+cd('C:\Users\wdh130\Documents\NO-Modeling-Data\Vasomotion\WGN_NO_production')
+close all
+figure, hold on
+clear
+clc
+for kk = 1500
+fs = 30;
+duration = 1500; %2 hours of data
+Gam = wgn(fs*duration,1,0);
+%Gam = randn(fs*duration,1);
+% Gam = Gam.^2;%
+% Gam = Gam.*5*10e-3*0.12;
 Gam = Gam.*5*10e-3*0.5;
+
+fc = 2;
+
+[b,a] = butter(6,fc/(fs/2));
+New_Gam = filtfilt(b,a,Gam);
+% 
+% figure, hold on
+% plot(time,Gam,'k')
+% plot(time,New_Gam,'r','LineWidth',3)
+
+
+
+time = 1/fs:1/fs:duration;
+    
+dt = 1/fs;
+params.Fs = 1/dt;
+params.tapers = [1 1];
+params.fpass = [0.025 fc+1];
+
+% figure, hold on
+% plot(time,New_Gam)
+[Power(:,kk), Hz] = mtspectrumc(New_Gam,params);
+plot(Hz, Power(:,kk),'k')
+xlim([0 fc+1])
+set(gca,'YScale','linear')
+
+% end
+% ylim([0 1.5*10^-4])
+% plot(Hz, mean(Power,2),'r','Linewidth',4)
+% freqz(b,a)
+
+
 % 
 % ii = 1;
 % real_Gam = importdata(['GammaBandPower_' num2str(ii) '.csv'])';
@@ -97,10 +135,11 @@ Gam = Gam.*5*10e-3*0.5;
 % ylabel('Power')
 
 
-fileID = fopen(['GammaBandPower_10' num2str(kk) '.csv'],'a');
-fprintf(fileID,'%f\n',[Gam]);
+fileID = fopen(['WGN_' num2str(kk) '.csv'],'a');
+fprintf(fileID,'%f\n',[New_Gam]);
 fclose(fileID);
 end
+plot(Hz, mean(Power,2),'r','Linewidth',4)
 
 
 

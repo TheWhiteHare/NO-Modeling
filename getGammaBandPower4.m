@@ -3,7 +3,7 @@ function [NO_production] = getGammaBandPower4(t,ii)
 %   Detailed explanation goes here
 % ii = 1;
 % t = 5.01;
-cd('C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData')
+%cd('C:\Users\wdh130\Documents\MATLAB-BACKUP\NOFeedbackData')
 % if t == 0
 %     NO_production = 0
 % else

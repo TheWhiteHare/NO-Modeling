@@ -1,4 +1,4 @@
-function [dilation] = dilation_matlab_kernel_Hct(c, t, NO_Mult, stim_duration, NO_sens, basalGC, Hz, radius,pfHgb,Hct)
+function [dilation] = dilation_matlab_kernel_pfHgb(c, t, NO_Mult, stim_duration, NO_sens, basalGC, Hz, radius,pfHgb,Hct)
 HOME = pwd;
 cd('C:\Users\wdh130\Documents\NO-Modeling-Data\Hematocrit')
 
@@ -53,11 +53,11 @@ else
 % NO_sens_Hill = @(GC_state) interp1(GC(2:end)-0.005,NO_sens_Hill_hold,GC_state);   
 % %
     
-if abs(dilation*NO_sens) <= 10^-8
-    dilation = 0
-else
-    dilation = round(dilation*NO_sens,8)
-end
+% if abs(dilation*NO_sens) <= 10^-8
+%     dilation = 0
+% else
+%     dilation = round(dilation*NO_sens,8)
+% end
 
 
 % if t > (delay)
