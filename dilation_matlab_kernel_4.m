@@ -14,7 +14,7 @@ else
 %dlmwrite('NO_history.csv',[time concentration],'precision','%.4f');
 end
 
-dlmwrite('NO_history_temp2.csv',[t c],'-append','precision','%.4f');
+% dlmwrite('NO_history_temp2.csv',[t c],'-append','precision','%.4f');
 
 if (t-delay)<=0
     dilation = 0;
@@ -58,11 +58,11 @@ else
 end
 
 
-if t > (delay)
-        ExtraSignal = 19.25*((t-(delay)).^(a1-1).*b1.^(a1).*exp(-b1.*(t-(delay)))./gamma(a1))
-        dilation = dilation + ExtraSignal*2;
-else
-end
+% if t > (delay)
+%         ExtraSignal = 19.25*((t-(delay)).^(a1-1).*b1.^(a1).*exp(-b1.*(t-(delay)))./gamma(a1))
+%         dilation = dilation + ExtraSignal*2;
+% else
+% end
 
 
 % if t > (delay+9)
@@ -83,11 +83,11 @@ end
 % -test(c)*nNOS_per*2*pi*r*(1+(rect2(t/tn)*(NO_Mult-1)))
 end
 
-fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith20SCD.csv'],'a');
+% fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith20SCD.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaWith35lowSCD.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_ExtraPulseNorm60Hgb.csv'],'a');
 %fileID = fopen([num2str(NO_Mult) 'NO_' num2str(stim_duration) 'NOd_' num2str(NO_sens) 'NOsens_' num2str(basalGC) 'bGC_' num2str(Hz) 'Hz_' num2str(round(radius*2,1)) 'VD_' '6sNOkernel_GammaBand.csv'],'a');
-fprintf(fileID,'%f %f %f\n',[t c dilation]);
-fclose(fileID);
+% fprintf(fileID,'%f %f %f\n',[t c dilation]);
+% fclose(fileID);
 cd(HOME)
 end
